@@ -1,9 +1,12 @@
 package com.example.demo.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
+import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,10 +27,14 @@ public class UserFormationController {
 	
 	private FormationRepository formationRepository;
 	private UserRepository userRepository;
+	@Autowired
+	private MongoTemplate mongoTemplate;
 
 	@GetMapping("/user")
 	public String showFormations (Model model) {
 		model.addAttribute("formations", formationRepository.findAll());
+		User user = userRepository.findByNomUtilisateur("user");
+		saveStatistics(user, "consulter", "liste de formations");
 		return "userShowFormations";
 	}
 	
@@ -73,6 +80,15 @@ public class UserFormationController {
 		User user = userRepository.findByNomUtilisateur("user");
 		model.addAttribute("formations", user.getFormations());
 		return "registerList";
+	}
+	
+	public void saveStatistics(User user, String typeAction, Object value) {
+		Document doc = new Document("nom", user.getNom())
+				.append("prenom", user.getPrenom())
+				.append(typeAction, value)
+				.append("date_operation", LocalDateTime.now());
+		System.out.println(mongoTemplate.insert(doc, "statistics"));
+				
 	}
 
 }
