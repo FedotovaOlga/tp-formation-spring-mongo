@@ -27,7 +27,6 @@ public class UserFormationController {
 	
 	private FormationRepository formationRepository;
 	private UserRepository userRepository;
-	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	@GetMapping("/user")
@@ -41,6 +40,8 @@ public class UserFormationController {
 	@PostMapping("/user")
 	public String showFormations(Model model, @RequestParam String nom) {
 		model.addAttribute("formations", formationRepository.findByNomContaining(nom));
+		User user = userRepository.findByNomUtilisateur("user");
+		saveStatistics(user, "rechercher", nom);
 		return "userShowFormations";
 	}
 	
@@ -82,7 +83,7 @@ public class UserFormationController {
 		return "registerList";
 	}
 	
-	public void saveStatistics(User user, String typeAction, Object value) {
+	private void saveStatistics(User user, String typeAction, Object value) {
 		Document doc = new Document("nom", user.getNom())
 				.append("prenom", user.getPrenom())
 				.append(typeAction, value)
