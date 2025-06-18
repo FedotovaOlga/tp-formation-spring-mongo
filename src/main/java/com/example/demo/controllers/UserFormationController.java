@@ -73,6 +73,7 @@ public class UserFormationController {
 		}
 		
 		model.addAttribute("formations", user.getFormations());
+		saveStatistics(user, "modifier", formation);
 		return "registerList";
 	}
 	
