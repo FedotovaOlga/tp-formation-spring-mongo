@@ -15,7 +15,6 @@
 					value="${ formation.dateDebut }"></c:out>, <c:out
 					value="${ formation.nbrJours }"></c:out> jours, à <c:out
 					value="${ formation.ville }"></c:out>
-					<a href="">S'inscrire</a>
 			</li>
 			
 		</c:forEach>
